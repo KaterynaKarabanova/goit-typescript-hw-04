@@ -4,19 +4,17 @@ import React, {
   useState,
   useContext,
   ReactNode,
-  Dispatch,
-  SetStateAction,
 } from "react";
 
 type MenuIds = "first" | "second" | "last";
 type Menu = { id: MenuIds; title: string };
 
+type SelectedMenu = { id: MenuIds } | {};
 type MenuSelected = {
-  selectedMenu: Menu | null;
+  selectedMenu: SelectedMenu;
 };
-
 type MenuAction = {
-  onSelectedMenu: Dispatch<SetStateAction<MenuSelected>>;
+  onSelectedMenu: (menu: SelectedMenu) => void;
 };
 
 const MenuSelectedContext = createContext<MenuSelected | undefined>(undefined);
@@ -27,9 +25,7 @@ type PropsProvider = {
 };
 
 function MenuProvider({ children }: PropsProvider) {
-  const [selectedMenu, setSelectedMenu] = useState<MenuSelected>({
-    selectedMenu: null,
-  });
+  const [selectedMenu, setSelectedMenu] = useState<SelectedMenu>({});
 
   const menuContextAction = useMemo(
     () => ({
@@ -69,7 +65,7 @@ function MenuComponent({ menus }: PropsMenu) {
           onClick={() => onSelectedMenu({ selectedMenu: menu })}
         >
           {menu.title}{" "}
-          {selectedMenu.selectedMenu?.id === menu.id
+          {selectedMenu?.selectedMenu.id === menu.id
             ? "Selected"
             : "Not selected"}
         </div>
