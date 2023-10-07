@@ -9,7 +9,7 @@ import React, {
 type MenuIds = "first" | "second" | "last";
 type Menu = { id: MenuIds; title: string };
 
-type SelectedMenu = { id: MenuIds } | {};
+type SelectedMenu = { id: MenuIds };
 type MenuSelected = {
   selectedMenu: SelectedMenu;
 };
@@ -17,15 +17,21 @@ type MenuAction = {
   onSelectedMenu: (menu: SelectedMenu) => void;
 };
 
-const MenuSelectedContext = createContext<MenuSelected | undefined>(undefined);
-const MenuActionContext = createContext<MenuAction | undefined>(undefined);
+const MenuSelectedContext = createContext<MenuSelected | undefined>({
+  selectedMenu: { id: "first" },
+});
+const MenuActionContext = createContext<MenuAction | undefined>({
+  onSelectedMenu: () => {},
+});
 
 type PropsProvider = {
   children: ReactNode;
 };
 
 function MenuProvider({ children }: PropsProvider) {
-  const [selectedMenu, setSelectedMenu] = useState<SelectedMenu>({});
+  const [selectedMenu, setSelectedMenu] = useState<SelectedMenu>({
+    id: "first",
+  });
 
   const menuContextAction = useMemo(
     () => ({
@@ -33,6 +39,7 @@ function MenuProvider({ children }: PropsProvider) {
     }),
     []
   );
+
   const menuContextSelected = useMemo(
     () => ({
       selectedMenu,
@@ -55,19 +62,14 @@ type PropsMenu = {
 
 function MenuComponent({ menus }: PropsMenu) {
   const { onSelectedMenu } = useContext(MenuActionContext)!;
-  const selectedMenu = useContext(MenuSelectedContext)!;
+  const { selectedMenu } = useContext(MenuSelectedContext)!;
 
   return (
     <>
       {menus.map((menu) => (
-        <div
-          key={menu.id}
-          onClick={() => onSelectedMenu({ selectedMenu: menu })}
-        >
+        <div key={menu.id} onClick={() => onSelectedMenu({ id: menu.id })}>
           {menu.title}{" "}
-          {selectedMenu?.selectedMenu.id === menu.id
-            ? "Selected"
-            : "Not selected"}
+          {selectedMenu.id === menu.id ? "Selected" : "Not selected"}
         </div>
       ))}
     </>
