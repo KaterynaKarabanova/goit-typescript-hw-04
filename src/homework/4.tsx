@@ -1,3 +1,4 @@
+import { noop } from "lodash";
 import React, {
   createContext,
   useMemo,
@@ -9,7 +10,7 @@ import React, {
 type MenuIds = "first" | "second" | "last";
 type Menu = { id: MenuIds; title: string };
 
-type SelectedMenu = { id: MenuIds };
+type SelectedMenu = { id: MenuIds } | {};
 type MenuSelected = {
   selectedMenu: SelectedMenu;
 };
@@ -17,11 +18,11 @@ type MenuAction = {
   onSelectedMenu: (menu: SelectedMenu) => void;
 };
 
-const MenuSelectedContext = createContext<MenuSelected | undefined>({
-  selectedMenu: { id: "first" },
+const MenuSelectedContext = createContext<MenuSelected>({
+  selectedMenu: {},
 });
-const MenuActionContext = createContext<MenuAction | undefined>({
-  onSelectedMenu: () => {},
+const MenuActionContext = createContext<MenuAction>({
+  onSelectedMenu: noop,
 });
 
 type PropsProvider = {
@@ -29,9 +30,7 @@ type PropsProvider = {
 };
 
 function MenuProvider({ children }: PropsProvider) {
-  const [selectedMenu, setSelectedMenu] = useState<SelectedMenu>({
-    id: "first",
-  });
+  const [selectedMenu, setSelectedMenu] = useState<SelectedMenu>({});
 
   const menuContextAction = useMemo(
     () => ({
