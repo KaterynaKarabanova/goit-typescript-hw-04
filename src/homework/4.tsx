@@ -10,7 +10,7 @@ import React, {
 type MenuIds = "first" | "second" | "last";
 type Menu = { id: MenuIds; title: string };
 
-type SelectedMenu = { id: MenuIds } | {};
+type SelectedMenu = { id?: MenuIds };
 type MenuSelected = {
   selectedMenu: SelectedMenu;
 };
@@ -60,8 +60,8 @@ type PropsMenu = {
 };
 
 function MenuComponent({ menus }: PropsMenu) {
-  const { onSelectedMenu } = useContext(MenuActionContext)!;
-  const { selectedMenu } = useContext(MenuSelectedContext)!;
+  const { onSelectedMenu } = useContext(MenuActionContext);
+  const { selectedMenu } = useContext(MenuSelectedContext);
 
   return (
     <>
